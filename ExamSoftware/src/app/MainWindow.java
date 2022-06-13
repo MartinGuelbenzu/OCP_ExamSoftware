@@ -7,13 +7,23 @@ package app;
 
 import classes.Question;
 import classes.getQuestions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import static java.awt.Component.BOTTOM_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -69,7 +79,7 @@ public class MainWindow extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    static ArrayList<Question> preguntas;
+    static List<Question> preguntas;
     public static final Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
 
     public static void main(String args[]) throws FileNotFoundException {
@@ -99,19 +109,44 @@ public class MainWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                try {
-                    preguntas = getQuestions.readLines();
-                } catch (FileNotFoundException ex) {
-                }
 
+                //preguntas = getQuestions.readLines();
+                loadData();
+                
                 runComponents(true);
-
             }
-        });
+        }
+        );
 
     }
 
+    public static void loadData() {
+        try {
+            //  Carga de preguntas y respuestas
+            //preguntas = getQuestions.readLines();
+
+            String jstring = "";
+
+            Gson gson = new GsonBuilder().create();
+
+            String fileName = "\\output.json";
+            Path path = new File(new File("").getAbsolutePath() + fileName).toPath();
+
+            try (Reader reader = Files.newBufferedReader(path)) {
+
+                Question[] quests = gson.fromJson(reader, Question[].class);
+
+                preguntas = Arrays.asList(quests);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error JSON");
+        }
+    }
+
     public static void runComponents(boolean sum) {
+
+        //  Lógica para iterar @preguntas
         if (sum) {
             if (i != 1004) {
                 if (preguntas.get(++i).isAnswered()) {
@@ -130,6 +165,8 @@ public class MainWindow extends javax.swing.JFrame {
                 i = 1004;
             }
         }
+
+        //  Declaración de elementos de la interfaz
         JFrame mw = new MainWindow();
         JLabel enunciadoLabel = new javax.swing.JLabel();
         JPanel panelPrincipal = new JPanel();
@@ -139,23 +176,36 @@ public class MainWindow extends javax.swing.JFrame {
         JButton botonSend = new JButton();
         JButton botonPrev = new JButton();
 
+        //  Ventana principal
         mw.setVisible(true);
         mw.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
+        //  Panel que va a contener el resto de elementos
         panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
         panelPrincipal.setSize(ss);
         panelPrincipal.setVisible(true);
         mw.add(panelPrincipal);
 
+        //  Enunciado
         enunciadoLabel.setVisible(true);
+        enunciadoLabel.setText(convertToMultiline(i
+                + "Chapter: "
+                + preguntas.get(i).getChapter()
+                + " Question: "
+                + preguntas.get(i).getNumber()
+                + "\n"
+                + preguntas.get(i).getQuestion()));
         panelPrincipal.add(enunciadoLabel);
 
+        //  Panel contenedor de los RadioButtons de las respuestas
         panelRespuestas.setVisible(true);
-        panelPrincipal.add(panelRespuestas);
         panelRespuestas.setLayout(new BoxLayout(panelRespuestas, BoxLayout.Y_AXIS));
+        panelPrincipal.add(panelRespuestas);
 
+        //  Función que crea los RadioButtons dependiendo del numero de respuestas
         setRadioButtons(i, panelRespuestas);
 
+        //  Panel para los botones de control (prev,send,next)
         panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.X_AXIS));
         panelBotones.setVisible(true);
         panelPrincipal.setSize(ss);
@@ -169,7 +219,7 @@ public class MainWindow extends javax.swing.JFrame {
             runComponents(false);
         });
         panelBotones.add(botonPrev, BOTTOM_ALIGNMENT);
-        
+
         botonSend.setText("-SEND-");
         botonSend.setVisible(true);
         botonSend.addActionListener((ActionEvent e) -> {
@@ -189,13 +239,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
         panelBotones.add(botonNext, BOTTOM_ALIGNMENT);
 
-        enunciadoLabel.setText(convertToMultiline(i
-                + "Chapter: "
-                + preguntas.get(i).getChapter()
-                + " Question: "
-                + preguntas.get(i).getNumber()
-                + "\n"
-                + preguntas.get(i).getQuestion()));
     }
 
     public static String convertToMultiline(String orig) {

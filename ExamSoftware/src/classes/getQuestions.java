@@ -5,11 +5,20 @@
  */
 package classes;
 
-import classes.Question;
 import static classes.getAndAssignCorrectAnswer.getAndAssignCorrectAnswer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -28,7 +37,7 @@ public class getQuestions {
      * document.
      */
 //    
-    public static ArrayList<Question> readLines() throws FileNotFoundException {
+    public static ArrayList<Question> readLines() throws FileNotFoundException, IOException {
 
         ArrayList<Question> preguntas = new ArrayList<>();
         try {
@@ -85,6 +94,24 @@ public class getQuestions {
         } catch (Exception e) {
             System.out.println("File not found");
         }
-        return getAndAssignCorrectAnswer(preguntas);
+        //Creating a JSONObject object
+        JsonObject jsonObject;
+        JsonArray array = new JsonArray();
+        StringBuilder json = new StringBuilder("");
+        preguntas =  getAndAssignCorrectAnswer(preguntas);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        for(Question q : preguntas){
+            
+            json = json.append(gson.toJson(q) + "\n");
+            
+        }
+        Path path = Paths.get("output.json");
+        
+        try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+
+            gson.toJson(preguntas, writer);
+        }        
+        return preguntas;
     }
 }
