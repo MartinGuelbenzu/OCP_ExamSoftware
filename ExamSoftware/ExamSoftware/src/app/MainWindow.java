@@ -5,6 +5,11 @@
  */
 package app;
 
+import static app.ExamWindow.loadData;
+import static app.ExamWindow.preguntas;
+import static app.Main.interfaz;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author Green
@@ -30,17 +35,17 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        jBotonExamen = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setAutoscrolls(true);
 
-        jButton1.setText("<html>Hacer examen<br>(50 preguntas)</html>");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jBotonExamen.setText("<html>Hacer examen<br>(50 preguntas)</html>");
+        jBotonExamen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jBotonExamenActionPerformed(evt);
             }
         });
 
@@ -59,14 +64,14 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(132, 132, 132)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jBotonExamen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(150, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jBotonExamen, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(166, Short.MAX_VALUE))
@@ -92,12 +97,26 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jBotonExamenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonExamenActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        //jBotonExamen.setText("probando");
+        interfaz.dispose();
+            //preguntas.get(i).setAnswered(true);
+            loadData();
+            new ExamWindow().setVisible(true);
+    }//GEN-LAST:event_jBotonExamenActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        loadData();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                
+                ExamWindow gui = new ExamWindow();
+                gui.setVisible(true);
+                gui.setExtendedState(interfaz.MAXIMIZED_BOTH);
+            }
+        });
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -136,7 +155,7 @@ public class MainWindow extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jBotonExamen;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

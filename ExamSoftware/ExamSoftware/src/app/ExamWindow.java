@@ -42,6 +42,7 @@ public class ExamWindow extends javax.swing.JFrame {
      */
     public ExamWindow() {
         initComponents();
+        runComponents(true);
     }
 
     /**
@@ -143,11 +144,12 @@ public class ExamWindow extends javax.swing.JFrame {
 
         //  Declaración de elementos de la interfaz
         JFrame mw = new ExamWindow();
-        JLabel enunciadoLabel = new javax.swing.JLabel();
         JPanel panelPrincipal = new JPanel();
         JPanel panelWraper = new JPanel();
         JPanel panelRespuestas = new JPanel();
         JPanel panelBotones = new JPanel();
+        JLabel enunciadoLabel = new javax.swing.JLabel();
+        
         JButton botonNext = new JButton();
         JButton botonSend = new JButton();
         JButton botonPrev = new JButton();
